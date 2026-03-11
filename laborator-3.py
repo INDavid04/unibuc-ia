@@ -86,3 +86,39 @@ if __name__ == "__main__":
 
     print(f"Clasa prezisa pentru imaginea de test este: {rezultat_predictie}")
     
+################
+# Cerinta ex 3 #
+################
+
+# Calculați acuratețea metodei celor mai apropiați vecini pe mulțimea de testare având ca distanța ‘l2’ și numărul de vecini 3. Salvați predicțiile în fișierul predictii_3nn_l2_mnist.txt. Obs: - Acuratețea pe mulțimea de testare este de 89.8%.
+
+##################
+# Rezolvare ex 3 #
+##################
+
+if __name__ == "__main__":
+    train_images = numpy.loadtxt('data_MNIST/data/test_images.txt')
+    train_labels = numpy.loadtxt('data_MNIST/data/test_labels.txt')
+    test_images = numpy.loadtxt('data_MNIST/data/train_images.txt')
+    test_labels = numpy.loadtxt('data_MNIST/data/train_labels.txt')
+
+    knn = KnnClassifier(train_images, train_labels)
+
+    predictii = []
+
+    print("Incepe clasificarea ...")
+    for i in range(len(test_images)):
+        imagine_curenta = test_images[i:i+1] 
+        
+        predictie = knn.classify_image(imagine_curenta, num_neighbors=3, metric='l2')
+        
+        predictii.append(predictie)
+
+    predictii = numpy.array(predictii)
+
+    acuratete = numpy.mean(predictii == test_labels)
+    
+    print(f"Acuratetea este {acuratete * 100:.2f}%")
+    
+    numpy.savetxt('predictii_3nn_l2_mnist.txt', predictii, fmt='%d')
+    print("Predicțiile au fost salvate cu succes în 'predictii_3nn_l2_mnist.txt'.")
