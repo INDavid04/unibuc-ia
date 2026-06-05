@@ -72,3 +72,15 @@ predictii = model_bayes_naiv.predict(aparitii_testare)
 numpy.save("Irimia_David_241_subiect1_solutia_1.npy", predictii)
 
 print("Fisierul Irimia_David_241_subiect1_solutia_1.npy a fost generat cu succes!\n")
+
+########
+# Test #
+########
+
+# Numara cate propozitii au fost ghicite corect
+predictii_antrenare = model_bayes_naiv.predict(aparitii_antrenare)
+numar_propozitii_corecte = numpy.sum(predictii_antrenare == raspunsuri)
+numar_propozitii = len(raspunsuri)
+
+# Afiseaza acuratetea
+print(f"Acuratete: {(numar_propozitii_corecte / numar_propozitii) * 100}\n")
