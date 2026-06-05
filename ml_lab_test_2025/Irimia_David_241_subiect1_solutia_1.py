@@ -63,7 +63,7 @@ aparitii_antrenare = analizator.numara_aparitii(fraze_antrenare)
 aparitii_testare = analizator.numara_aparitii(fraze_testare)
 
 # Antreneaza modelul bayes naiv
-model_bayes_naiv = MultinomialNB(alpha=0.5)
+model_bayes_naiv = MultinomialNB()
 model_bayes_naiv.fit(aparitii_antrenare, raspunsuri)
 
 # Genereaza predictiile pentru datele de testare
