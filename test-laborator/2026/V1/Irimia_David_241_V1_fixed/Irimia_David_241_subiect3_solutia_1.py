@@ -1,8 +1,8 @@
 """
+Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
+
 Subiectul 3 (2.5p): Reprezentare TF-IDF a exemplelor (folosind vocabularul
 TF-ISF de la exercitiul 2) + Kernel Ridge Regression cu kernel RBF, gamma=777.
-
-Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
 
 NOTA IMPORTANTA (calibrare gamma): folosind gamma=777 direct pe reprezentarea
 TF-IDF standard (norma L2), distantele euclidiene la patrat dintre exemple
@@ -20,22 +20,21 @@ de validare.
 Pe un split intern de validare (85/15) obtinem MSE ~ 0.75 (sub pragul de
 0.80 necesar pentru punctajul maxim de 2.5p).
 """
+
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
-
-TFIDF_SCALE = 0.02   # scalare calibrata pentru compatibilitate cu gamma=777
+TFIDF_SCALE = 0.02 # scalare calibrata pentru compatibilitate cu gamma=777
 KRR_ALPHA = 0.3
 N_LAT_BINS, N_LON_BINS = 4, 40
 TOP_K = 1500
 
-
 def build_tf_isf_vocabulary(texts, coords, n_lat_bins=N_LAT_BINS, n_lon_bins=N_LON_BINS,
                              top_k=TOP_K, analyzer='word', ngram_range=(1, 1)):
-    """Vocabular TF-ISF (vezi si subiectul 2 pentru descrierea completa)."""
+    # Vocabular TF-ISF (vezi si subiectul 2 pentru descrierea completa).
     texts = list(texts)
     coords = np.asarray(coords, dtype=np.float64)
     lat, lon = coords[:, 0], coords[:, 1]
@@ -75,11 +74,11 @@ def build_tf_isf_vocabulary(texts, coords, n_lat_bins=N_LAT_BINS, n_lon_bins=N_L
 
 
 if __name__ == "__main__":
-    train_samples = open("train_samples.txt", encoding="utf-8").read().splitlines()
-    train_coords = np.load("train_coordinates.npy")
-    test_samples = open("test_samples.txt", encoding="utf-8").read().splitlines()
+    train_samples = open("../train_samples.txt", encoding="utf-8").read().splitlines()
+    train_coords = np.load("../train_coordinates.npy")
+    test_samples = open("../test_samples.txt", encoding="utf-8").read().splitlines()
 
-    # --- split intern, doar pentru raportarea MSE ---
+    # split intern, doar pentru raportarea MSE
     X_tr_txt, X_val_txt, y_tr, y_val = train_test_split(
         train_samples, train_coords, test_size=0.15, random_state=42)
 
@@ -96,7 +95,7 @@ if __name__ == "__main__":
     pred_val = krr.predict(Xval)
     print("VAL MSE (interna, pentru raport):", mean_squared_error(y_val, pred_val))
 
-    # --- reantrenare pe tot setul de train, predictie finala pe test ---
+    # reantrenare pe tot setul de train, predictie finala pe test
     vocab_full = build_tf_isf_vocabulary(train_samples, train_coords)
     tfidf_full = TfidfVectorizer(vocabulary=vocab_full, lowercase=True,
                                   token_pattern=r"(?u)\b\w\w+\b", norm='l2')

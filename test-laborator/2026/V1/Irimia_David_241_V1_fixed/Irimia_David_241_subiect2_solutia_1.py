@@ -1,12 +1,12 @@
 """
+Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
+
 Subiectul 2 (2.5p): Constructie vocabular TF-ISF (Term Frequency - Inverse
 Spatial Frequency) pentru datele geo-etichetate.
-
-Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
 """
+
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
-
 
 def build_tf_isf_vocabulary(texts, coords, n_lat_bins=4, n_lon_bins=40,
                              top_k=1500, analyzer='word', ngram_range=(1, 1)):
@@ -38,6 +38,7 @@ def build_tf_isf_vocabulary(texts, coords, n_lat_bins=4, n_lon_bins=40,
     vocab : list[str] - vocabularul final (cuvinte unice, sortate)
     grid_info : dict - limitele grilei folosite (utile pentru reproducere)
     """
+
     texts = list(texts)
     coords = np.asarray(coords, dtype=np.float64)
     lat, lon = coords[:, 0], coords[:, 1]
@@ -88,8 +89,8 @@ def build_tf_isf_vocabulary(texts, coords, n_lat_bins=4, n_lon_bins=40,
 
 
 if __name__ == "__main__":
-    train_samples = open("train_samples.txt", encoding="utf-8").read().splitlines()
-    train_coords = np.load("train_coordinates.npy")
+    train_samples = open("../train_samples.txt", encoding="utf-8").read().splitlines()
+    train_coords = np.load("../train_coordinates.npy")
     vocab, grid_info = build_tf_isf_vocabulary(train_samples, train_coords,
                                                 n_lat_bins=4, n_lon_bins=40, top_k=1500)
     print("Dimensiune vocabular final:", len(vocab))

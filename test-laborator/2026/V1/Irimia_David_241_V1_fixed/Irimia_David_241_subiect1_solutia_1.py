@@ -1,8 +1,8 @@
 """
+Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
+
 Subiectul 1 (3p): Retea neurala cu cel mult 2 straturi ascunse, maxim 128 de
 neuroni pe strat, activare LReLU (Leaky ReLU) pentru straturile ascunse.
-
-Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
 
 Observatie: scikit-learn (MLPRegressor) nu ofera activarea LeakyReLU, asa ca
 am implementat o retea feed-forward proprie (numpy), cu propagare inainte /
@@ -16,6 +16,7 @@ Reprezentare intrare: TF-IDF (n-grame de caractere 2-5 + n-grame de cuvinte
 Pe un split intern de validare (85/15) obtinem MSE ~ 0.72-0.75 (sub pragul
 de 0.90 necesar pentru punctajul maxim de 3p).
 """
+
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
@@ -24,10 +25,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from scipy.sparse import hstack
 
-
-# --------------------------------------------------------------------------
 # Reteaua neuronala (LeakyReLU, <=2 straturi ascunse, <=128 neuroni/strat)
-# --------------------------------------------------------------------------
 class LReLUMLPRegressor:
     """Retea feed-forward cu cel mult 2 straturi ascunse, activare
     LeakyReLU, antrenata cu Adam si mini-batch-uri. Strat de iesire liniar
@@ -145,16 +143,13 @@ class LReLUMLPRegressor:
         activations, _ = self._forward(np.asarray(X, dtype=np.float64))
         return activations[-1]
 
-
-# --------------------------------------------------------------------------
 # Pipeline principal
-# --------------------------------------------------------------------------
 if __name__ == "__main__":
-    train_samples = open("train_samples.txt", encoding="utf-8").read().splitlines()
-    train_coords = np.load("train_coordinates.npy")
-    test_samples = open("test_samples.txt", encoding="utf-8").read().splitlines()
+    train_samples = open("../train_samples.txt", encoding="utf-8").read().splitlines()
+    train_coords = np.load("../train_coordinates.npy")
+    test_samples = open("../test_samples.txt", encoding="utf-8").read().splitlines()
 
-    # --- split intern, doar pentru raportarea MSE ---
+    # split intern, doar pentru raportarea MSE
     X_tr_txt, X_val_txt, y_tr, y_val = train_test_split(
         train_samples, train_coords, test_size=0.15, random_state=42)
 
@@ -179,7 +174,7 @@ if __name__ == "__main__":
     pred_val = ysc.inverse_transform(model.predict(Xval_r))
     print("VAL MSE (interna, pentru raport):", mean_squared_error(y_val, pred_val))
 
-    # --- reantrenare pe tot setul de train, predictie finala pe test ---
+    # reantrenare pe tot setul de train, predictie finala pe test
     Xtr_full_c = char_tfidf.fit_transform(train_samples)
     Xtr_full_w = word_tfidf.fit_transform(train_samples)
     Xtr_full = hstack([Xtr_full_c, Xtr_full_w]).tocsr()

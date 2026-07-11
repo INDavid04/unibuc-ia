@@ -1,8 +1,8 @@
 """
+Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
+
 Subiectul 4 (2.5p): SVM (SVR, kernel='precomputed') folosind kernelul de
 intersectie, aplicat pe reprezentarea TF-IDF de la exercitiul 3, gamma=777.
-
-Nume: Irimia David | Grupa: 241 | Colocviu IA, 6 iunie 2026, Varianta 1
 
 Kernelul de intersectie folosit: K(x, y) = gamma * sum_k min(x_k, y_k).
 
@@ -22,6 +22,7 @@ mai rapid decat varianta bruta O(n1*n2*d).
 Pe un split intern de validare (85/15) obtinem MSE ~ 0.81 (sub pragul de
 0.84 -> 2p din 2.5p).
 """
+
 import numpy as np
 from scipy.sparse import csc_matrix
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -29,14 +30,13 @@ from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
-
 GAMMA = 777
 TFIDF_SCALE = 0.02
 N_LAT_BINS, N_LON_BINS = 4, 40
 TOP_K = 1500
 # (C, epsilon) alesi prin validare, separat pentru fiecare dimensiune
-PARAMS = {0: dict(C=0.3, epsilon=0.55),   # latitudine
-          1: dict(C=0.3, epsilon=0.80)}   # longitudine
+PARAMS = {0: dict(C=0.3, epsilon=0.55), # latitudine
+          1: dict(C=0.3, epsilon=0.80)} # longitudine
 
 
 def build_tf_isf_vocabulary(texts, coords, n_lat_bins=N_LAT_BINS, n_lon_bins=N_LON_BINS,
@@ -81,8 +81,7 @@ def build_tf_isf_vocabulary(texts, coords, n_lat_bins=N_LAT_BINS, n_lon_bins=N_L
 
 
 def intersection_kernel_matrix(X, Y=None, gamma=1.0):
-    """Kernel de intersectie K(x,y) = gamma * sum_k min(x_k, y_k), calculat
-    eficient pe coloane (vezi docstring modul)."""
+    # Kernel de intersectie K(x,y) = gamma * sum_k min(x_k, y_k), calculat eficient pe coloane (vezi docstring modul).
     Xc = csc_matrix(X)
     Yc = Xc if Y is None else csc_matrix(Y)
 
@@ -108,11 +107,11 @@ def intersection_kernel_matrix(X, Y=None, gamma=1.0):
 
 
 if __name__ == "__main__":
-    train_samples = open("train_samples.txt", encoding="utf-8").read().splitlines()
-    train_coords = np.load("train_coordinates.npy")
-    test_samples = open("test_samples.txt", encoding="utf-8").read().splitlines()
+    train_samples = open("../train_samples.txt", encoding="utf-8").read().splitlines()
+    train_coords = np.load("../train_coordinates.npy")
+    test_samples = open("../test_samples.txt", encoding="utf-8").read().splitlines()
 
-    # --- split intern, doar pentru raportarea MSE ---
+    # split intern, doar pentru raportarea MSE
     X_tr_txt, X_val_txt, y_tr, y_val = train_test_split(
         train_samples, train_coords, test_size=0.15, random_state=42)
 
@@ -132,7 +131,7 @@ if __name__ == "__main__":
         preds_val[:, dim] = svr.predict(Kval)
     print("VAL MSE (interna, pentru raport):", mean_squared_error(y_val, preds_val))
 
-    # --- reantrenare pe tot setul de train, predictie finala pe test ---
+    # reantrenare pe tot setul de train, predictie finala pe test
     vocab_full = build_tf_isf_vocabulary(train_samples, train_coords)
     tfidf_full = TfidfVectorizer(vocabulary=vocab_full, lowercase=True,
                                   token_pattern=r"(?u)\b\w\w+\b", norm='l2')
